@@ -1,0 +1,3 @@
+https://learn.sparkfun.com/tutorials/terminal-basics/tera-term-windows
+
+https://learn.sparkfun.com/tutorials/using-the-bluesmirf/all

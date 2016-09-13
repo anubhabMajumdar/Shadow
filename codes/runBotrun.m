@@ -1,0 +1,53 @@
+%% open serial comm
+% arduino=serial('COM12','BaudRate',9600);
+% fopen(arduino);
+
+% arduino=1;
+% 
+% %% initialise video input
+% vid = videoinput('winvideo', 1, 'YUY2_640x480');
+% vid.ReturnedColorSpace='RGB';
+% 
+%% capture the arrow and detect it
+im = imread('greenRight.jpg');
+%im=getsnapshot(vid);
+imshow(im);
+dir=direction(im);
+fprintf(arduino,'%s',dir);  % R- right ,L- Left
+
+%% start the object tracking
+%ack = 0;
+%try
+
+%ack= fread(arduino);
+while (fread(arduino) ~=1)
+end
+% catch
+%  while (ack ~= '1')
+%      ack= fread(arduino);
+%  end
+% end
+
+%if ack=='1'
+    % object tracking starts
+    set(vid, 'FramesPerTrigger', Inf);
+    vid.FrameGrabInterval = 1;
+    %start the video aquisition here
+    start(vid);
+    while(1)
+        im=getsnapshot(vid);
+        [c,bin]=colorDetect(im);
+        if c==1
+            disp('red cross detected');
+            disp('end of run');
+            fprintf(arduino, '%s', 'E');
+            break;
+        else
+            if (c == 2) || (c==3)
+            follow(bin,arduino);
+            end
+        end
+    end
+    stop(vid);
+    close all;
+%end
